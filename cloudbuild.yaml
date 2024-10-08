@@ -1,0 +1,26 @@
+steps:
+  - name: 'python:3.9-slim'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -e
+        cd /app
+        pip3 install -r requirements.txt
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/my-python-app'
+      - '.'
+
+images:
+  - 'gcr.io/$PROJECT_ID/my-python-app'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+artifacts:
+  objects:
+    location: 'gs://$PROJECT_ID-cloudbuild-artifacts'
+    paths: ['**']
